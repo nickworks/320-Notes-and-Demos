@@ -1,5 +1,7 @@
 
 # in any sub-folders, ignore extra files/folder in unity projects:
+
+**/[Bb]in/
 **/[Ll]ibrary/
 **/[Tt]emp/
 **/[Oo]bj/
