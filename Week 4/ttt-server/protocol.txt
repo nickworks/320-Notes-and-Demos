@@ -1,5 +1,7 @@
-Tictactoe Protocol (TTTP) v1.0
-==============================
+Tictactoe Protocol (TTTP) v1.0 ==============================
+
+All multi-byte values stored using BIG ENDIAN.
+
 
 What game state needs to be stored on server?
  - state of board

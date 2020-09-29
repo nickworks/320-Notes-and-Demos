@@ -585,6 +585,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c87cfc79b6071904fbc8155fd824bbe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputHost: {fileID: 93760112}
+  inputPort: {fileID: 74823981}
+  panelHostDetails: {fileID: 1491262953}
+  panelUsername: {fileID: 349964732}
+  panelGameplay: {fileID: 1082053960}
 --- !u!1 &241899352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2181,7 +2186,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1082053960
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2711,7 +2716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1491262953
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2856,7 +2861,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1520956753}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 147078498}
+        m_TargetAssemblyTypeName: ControllerGameClient, Assembly-CSharp
+        m_MethodName: OnButtonConnect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1520956753
 MonoBehaviour:
   m_ObjectHideFlags: 0
