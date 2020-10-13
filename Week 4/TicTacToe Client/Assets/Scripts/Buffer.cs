@@ -26,72 +26,80 @@ public class Buffer
         return b;
     }
 
-    private byte[] bytes;
+    private byte[] _bytes;
+    public byte[] bytes
+    {
+        get
+        {
+            return _bytes;
+        }
+    }
+    
 
     public int Length
     {
         get
         {
-            return bytes.Length;
+            return _bytes.Length;
         }
     }
 
     private Buffer(int size = 0)
     {
         if (size < 0) size = 0;
-        bytes = new byte[size];
+        _bytes = new byte[size];
     }
 
     public void Concat(byte[] newdata, int numOfBytes = -1)
     {
         if (numOfBytes < 0 || numOfBytes > newdata.Length) numOfBytes = newdata.Length;
 
-        byte[] newbytes = new byte[bytes.Length + numOfBytes];
+        byte[] newbytes = new byte[_bytes.Length + numOfBytes];
 
         for(int i = 0; i < newbytes.Length; i++)
         {
-            if(i < bytes.Length)
+            if(i < _bytes.Length)
             {
-                newbytes[i] = bytes[i];
+                newbytes[i] = _bytes[i];
             } else {
-                newbytes[i] = newdata[i - bytes.Length];
+                newbytes[i] = newdata[i - _bytes.Length];
             }
         }
-        bytes = newbytes;
+        _bytes = newbytes;
     }
     public void Concat(Buffer other)
     {
-        Concat(other.bytes);
+        Concat(other._bytes);
     }
 
     public void Clear()
     {
-        bytes = new byte[0];
+        _bytes = new byte[0];
     }
 
     public void Consume(int numOfBytes)
     {
-        int newLength = bytes.Length - numOfBytes;
-        if (newLength >= bytes.Length) return;
+        int newLength = _bytes.Length - numOfBytes;
+        if (newLength >= _bytes.Length) return;
         if (newLength <= 0)
         {
-            bytes = new byte[0];
+            _bytes = new byte[0];
             return;
         }
 
         byte[] newbytes = new byte[newLength];
         for(int i = 0; i < newbytes.Length; i++)
         {
-            newbytes[i] = bytes[i + numOfBytes];
+            newbytes[i] = _bytes[i + numOfBytes];
         }
-        bytes = newbytes;
+        _bytes = newbytes;
     }
 
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder("<Buffer");
 
-        foreach(byte b in bytes)
+        foreach(byte b in _bytes)
         {
             sb.Append(" ");
             sb.Append(b.ToString("x2"));
@@ -115,8 +123,8 @@ public class Buffer
     }
     public byte ReadUInt8(int offset=0)
     {
-        if (offset < 0 || offset >= bytes.Length) return 0;
-        return bytes[offset];
+        if (offset < 0 || offset >= _bytes.Length) return 0;
+        return _bytes[offset];
     }
     public sbyte ReadInt8(int offset = 0)
     {
@@ -192,8 +200,8 @@ public class Buffer
     #region Write Integers
     public void WriteUInt8(byte val, int offset = 0)
     {
-        if (offset < 0 || offset >= bytes.Length) return;
-        bytes[offset] = val;
+        if (offset < 0 || offset >= _bytes.Length) return;
+        _bytes[offset] = val;
     }
     public void WriteByte(byte val, int offset = 0)
     {
@@ -268,7 +276,7 @@ public class Buffer
     #region Read Floats
     public float ReadSingleBE(int offset = 0)
     {
-        return BitConverter.ToSingle(bytes, offset);
+        return BitConverter.ToSingle(_bytes, offset);
     }
     public float ReadSingleLE(int offset = 0)
     {
@@ -285,7 +293,7 @@ public class Buffer
     }
     public double ReadDoubleBE(int offset = 0)
     {
-        return BitConverter.ToDouble(bytes, offset);
+        return BitConverter.ToDouble(_bytes, offset);
     }
     public double ReadDoubleLE(int offset = 0)
     {
@@ -348,12 +356,12 @@ public class Buffer
     #region Read Strings
     public string ReadString(int offset = 0, int length = 0)
     {
-        if (length <= 0) length = bytes.Length;
+        if (length <= 0) length = _bytes.Length;
 
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < length; i++)
         {
-            if (i + offset >= bytes.Length) break;
+            if (i + offset >= _bytes.Length) break;
             sb.Append((char)ReadByte(i + offset));
         }
         return sb.ToString();
@@ -373,7 +381,7 @@ public class Buffer
     {
         for (int i = 0; i < chars.Length; i++)
         {
-            if (offset + i >= bytes.Length) break;
+            if (offset + i >= _bytes.Length) break;
             char c = chars[i];
             WriteByte((byte)c, offset + i);
         }

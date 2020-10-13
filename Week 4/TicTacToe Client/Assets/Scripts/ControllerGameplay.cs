@@ -52,13 +52,30 @@ public class ControllerGameplay : MonoBehaviour
     }
     void ButtonClicked(ButtonXO bttn)
     {
-        print($"a button was clicked {bttn.pos}");
+        ControllerGameClient.singleton.SendPlayPacket(bttn.pos.X, bttn.pos.Y);
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void UpdateFromServer(byte gameStatus, byte whoseTurn, byte[] spaces)
     {
-        
+        // TODO: update all of the interface to reflect game state:
+        // - whose turn
+        // - 9 spaces on board
+        // - status
+        print("update from server: ");
+
+        for (int i = 0; i < spaces.Length; i++)
+        {
+            byte b = spaces[i];
+
+            int x = i % 3;
+            int y = i / 3;
+
+
+            boardUI[x, y].SetOwner(b);
+            print(b);
+        }
+
+
+
     }
 }
