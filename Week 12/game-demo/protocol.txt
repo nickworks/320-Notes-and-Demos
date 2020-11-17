@@ -1,0 +1,34 @@
+Game Demo Protocol
+
+
+
+Packets from Client
+===================
+
+JOIN - Sent when joining the game, this packet should "register the player".
+
+	O	L	Datatype	Desc
+	================================
+	0	4	ascii		"JOIN"
+
+INPT - Current state of the client's input from the player.
+
+	O 	L	Datatype	Desc
+	================================
+	0	4	ascii		"INPT"
+	4 	1	int8		direction of horizontal input
+
+
+Packets from Server
+===================
+
+BALL - The ball's position. Sent 60 times per second (yikes!).
+
+
+	O	L	Datatype	Desc
+	================================
+	0	4	ascii		"BALL"
+	4	4	uint32		frame-number	
+	8	4	float		x position
+	12	4	float		y position
+	16 	4	float		z position
