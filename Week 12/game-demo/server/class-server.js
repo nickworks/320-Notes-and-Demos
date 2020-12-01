@@ -53,19 +53,25 @@ exports.Server = class Server {
 		return this.clients[key];
 	}
 	makeClient(rinfo){
+
 		const key = this.getKeyFromRinfo(rinfo);
 		const client = new Client(rinfo);
 
-		// depending on scene (and other conditions) spawn Pawn:
-		client.spawnPawn(this.game);
-
 		this.clients[key] = client;
-
-		this.showClientList();
 
 		// send CREATE replication packets to client for every object:
 		const packet = this.game.makeREPL(false);
 		this.sendPacketToClient(packet, client); // TODO: needs ACK!!
+
+		// depending on scene (and other conditions) spawn Pawn:
+		client.spawnPawn(this.game);
+
+		this.showClientList();
+
+		const packet2 = Buffer.alloc(5);
+		packet2.write("PAWN", 0);
+		packet2.writeUInt8(client.pawn.networkID, 4);
+		this.sendPacketToClient(packet2, client);
 
 		return client;
 	}
