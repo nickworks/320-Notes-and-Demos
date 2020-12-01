@@ -1,8 +1,9 @@
 
-const arr = [];
+const obj = {};
 
-arr["10.45.156.13:65348"] = new Client();
+obj.x = "42";
 
+delete obj.x;
 
-console.log(arr);
+console.log(obj);
 
