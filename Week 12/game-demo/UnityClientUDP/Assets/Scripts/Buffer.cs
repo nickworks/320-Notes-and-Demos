@@ -94,6 +94,25 @@ public class Buffer
         }
         _bytes = newbytes;
     }
+    public Buffer Slice(int offset, int length = -1)
+    {
+        if (offset < 0) offset = 0;
+        if (length < 0) length = _bytes.Length - offset;
+
+        if (offset + length > _bytes.Length) return Buffer.Alloc(0);
+        if (length <= 0) return Buffer.Alloc(0);
+
+        byte[] newbytes = new byte[length];
+
+        int j = 0;
+        for (int i = offset; i < offset + length; i++)
+        {
+            newbytes[j++] = _bytes[i];
+        }
+        return Buffer.From(newbytes);
+    }
+
+
 
     public override string ToString()
     {

@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pawn : NetworkObject
+public class Bullet : NetworkObject
 {
-    new public static string classID = "PAWN";
+    new public static string classID = "BLLT";
 
-    public override void Serialize()
-    {
-        // TODO ...
-    }
+
     public override int Deserialize(Buffer packet)
     {
         return base.Deserialize(packet);

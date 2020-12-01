@@ -6,8 +6,17 @@ exports.Pawn = class Pawn extends NetworkObject {
 		super();
 		this.classID = "PAWN";
 	}
+	update(game){
+
+		this.position.x = Math.sin(game.time);
+
+	}
 	serialize(){
-		// TODO..
+		const b = super.serialize();
+
+		///
+
+		return b;
 	}
 	deserialize(){
 		// TODO..

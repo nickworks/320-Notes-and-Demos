@@ -1,3 +1,6 @@
+
+const Pawn = require("./class-Pawn.js").Pawn;
+
 exports.Game = class Game {
 	constructor(server){
 
@@ -7,14 +10,12 @@ exports.Game = class Game {
 
 		this.timeUntilNextStatePacket = 0;
 
-		this.ballPos = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
+		this.objs = []; // store NetworkObjects in here
 
 		this.server = server;
 		this.update();
+
+		this.spawnObject( new Pawn() );
 
 	}
 	update(){
@@ -24,8 +25,12 @@ exports.Game = class Game {
 
 		const player = this.server.getPlayer(0); // return nth client
 
+		for(var i in this.objs){
+			this.objs[i].update(this);
+		}
+
 		if(player){
-			this.ballPos.x += player.input.axisH * 1 * this.dt; // ball moves 1m/s
+			
 		}
 
 		if(this.timeUntilNextStatePacket > 0){
@@ -33,18 +38,45 @@ exports.Game = class Game {
 			this.timeUntilNextStatePacket -= this.dt;
 		} else {
 			this.timeUntilNextStatePacket = .1; // send 10% packets (~ 1/6 frames)
-			this.sendBallPos();
+			this.sendWorldState();
 		}
 
 		setTimeout(()=>this.update(), 16);
 	}
-	sendBallPos(){
-		const packet = Buffer.alloc(20);
-		packet.write("BALL", 0);
-		packet.writeUInt32BE(this.frame, 4);
-		packet.writeFloatBE(this.ballPos.x, 8);
-		packet.writeFloatBE(this.ballPos.y, 12);
-		packet.writeFloatBE(this.ballPos.z, 16);
+	sendWorldState(){
+
+		const packet = this.makeREPL(true);
+		this.server.sendPacketToAll(packet);
+	}
+	makeREPL(isUpdate = true){
+
+		isUpdate = !!isUpdate;
+
+		let packet = Buffer.alloc(5);
+		packet.write("REPL", 0);
+		packet.writeUInt8( isUpdate ? 2 : 1, 4);
+
+		this.objs.forEach(o=>{
+
+			const classID = Buffer.from(o.classID);
+			const data = o.serialize();
+
+			packet = Buffer.concat([packet, classID, data]);
+		});
+
+		return packet;
+	}
+	spawnObject(obj){
+		this.objs.push(obj);
+
+		let packet = Buffer.alloc(5);
+		packet.write("REPL", 0);
+		packet.writeUInt8(1, 4);
+
+		const classID = Buffer.from(obj.classID);
+		const data = obj.serialize();
+
+		packet = Buffer.concat([packet, classID, data]);
 
 		this.server.sendPacketToAll(packet);
 	}
