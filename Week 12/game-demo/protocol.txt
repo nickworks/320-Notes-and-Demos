@@ -1,7 +1,6 @@
 Game Demo Protocol
 
 
-
 Packets from Client
 ===================
 
@@ -22,7 +21,6 @@ INPT - Current state of the client's input from the player.
 Packets from Server
 ===================
 
-
 REPL - Sent when creating/updating/deleting game objects
 
 	O 	L 	Datatype	Desc
@@ -39,3 +37,12 @@ PAWN - Sent to client to indicate which pawn they control
 	==============================
 	0	4	ascii		PAWN
 	4	1	uint8		NetworkID
+
+HOST - Periodically sent over networks to broadcast server IP and Port
+
+	O 	L	Datatype	Desc
+	==============================
+	0	4	ascii		"HOST"
+	4	2	uint16		Port of server
+	6	1	uint8		length of server name
+	7	?	ascii		name of server

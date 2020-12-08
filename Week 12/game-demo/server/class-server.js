@@ -6,7 +6,10 @@ const Pawn = require("./class-Pawn.js").Pawn;
 exports.Server = class Server {
 	constructor(){
 
+		this.port = 319; // server listens on
+		this.serverName = "Nick's cool server!";
 		this.clients = [];
+		this.timeUntilNextBroadcast = 5;
 
 		// create socket:
 		this.sock = require("dgram").createSocket("udp4");
@@ -18,10 +21,7 @@ exports.Server = class Server {
 
 		this.game = new Game(this);
 
-		//this.game.spawnObject ( new Pawn() );
-
 		// start listening:
-		this.port = 320;
 		this.sock.bind(this.port);
 	}
 	onError(e){
@@ -107,12 +107,43 @@ exports.Server = class Server {
 		}
 	}
 	sendPacketToClient(packet, client){
-		this.sock.send(packet, 0, packet.length, client.rinfo.port, client.rinfo.address, ()=>{});
+		console.log(client.rinfo);
+		this.sock.send(packet, 0, packet.length, 321, client.rinfo.address, ()=>{});
+	}
+	broadcastPacket(packet){
+
+		const clientListenPort = 321;
+
+		this.sock.send(packet, 0, packet.length, clientListenPort, undefined);
+	}
+	broadcastServerHost(){
+
+		const nameLength = this.serverName.length;
+		const packet = Buffer.alloc(7+nameLength);
+
+		packet.write("HOST", 0);
+		packet.writeUInt16BE(this.port, 4);
+		packet.writeUInt8(nameLength, 6);
+		packet.write(this.serverName, 7);
+
+		//const addr = this.sock.address();
+		//console.log(addr);
+
+		this.broadcastPacket(packet);
+		//console.log("broadcast packet...");
 	}
 	update(game){
 		// check clients for disconnects, etc.
 		for(let key in this.clients){
 			this.clients[key].update(game);
 		}
+
+		this.timeUntilNextBroadcast -= game.dt;
+		if(this.timeUntilNextBroadcast <= 0){
+			this.timeUntilNextBroadcast = 1.5;
+
+			this.broadcastServerHost( );
+		}
+
 	}
 }
